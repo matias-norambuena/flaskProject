@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Food
+{% endblock %}
+
+{% block main %}
+    <h2>Nutritional Facts</h2>
+    <br>
+    <div class="container">
+        <form id="form">
+            <row class="row justify-content-center">
+                <div class="form-group col-4">
+                    <div class="mb-3">
+                        <label for="selectfood">Select Food</label>
+                        <select class="custom-select mr-sm-2" id="selectfood" name="food">
+                            <option selected></option>
+                            {% for food in foods %}
+                                <option value="{{ food["name"] }}">{{ food["name"] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </row>
+        </form>
+        <a href="/addfood" class="link-primary">+ Add Food </a>
+        <br>
+        <a href="/deletefood" class="link-primary"> - Delete Food</a>
+    </div>
+    <!-- Create a div where the graph will take place -->
+    <div id="graphic"></div>
+    <script>
+        let form = document.getElementById("form")
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            let params = formData.get("food").replace(" ", "+")
+            fetch('/fooddetail?food=' + params)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    chart(json)
+                })
+        });
+
+
+        function chart(json) {
+            d3.select("svg").remove();
+            data = json
+
+
+            var margin = {
+                top: 15,
+                right: 25,
+                bottom: 15,
+                left: 100
+            };
+
+            var width = 1200 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
+
+            var svg = d3.select("#graphic").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var x = d3.scale.linear()
+                .range([0, width])
+                .domain([0, d3.max(data, function (d) {
+                    return d.grams;
+                })]);
+
+            var y = d3.scale.ordinal()
+                .rangeRoundBands([height, 0], .1)
+                .domain(data.map(function (d) {
+                    return d.nutrient;
+                }));
+
+            //make y axis to show bar names
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                //no tick marks
+                .tickSize(0)
+                .orient("left");
+
+            var gy = svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+
+            var bars = svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("g")
+
+            //append rects
+            bars.append("rect")
+                .attr("class", "bar")
+                .attr("y", function (d) {
+                    return y(d.nutrient);
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", 0)
+                .attr("width", function (d) {
+                    return x(d.grams) * (0.02);
+                })
+                .attr("fill", "#04751c");
+
+            //add a value label to the right of each bar
+            bars.append("text")
+                .attr("class", "label")
+                //y position of the label is halfway down the bar
+                .attr("y", function (d) {
+                    return y(d.nutrient) + y.rangeBand() / 2 + 4;
+                })
+                //x position is 3 pixels to the right of the bar
+                .attr("x", function (d) {
+                    return (x(d.grams) * 0.02);
+                })
+                .text(function (d) {
+                    return d.grams + " gr";
+                });
+
+        }
+    </script>
+
+
+{% endblock %}

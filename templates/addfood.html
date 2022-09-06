@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Food
+{% endblock %}
+
+{% block main %}
+    <h4 class="text-center">Fill the fields with amount of nutrients per 100 gr</h4>
+    <br>
+    <form action="/addfood" method="post">
+        <div class="container">
+            <div class="mb-3 row">
+                <label for="name" class="col-sm-2 col-form-label justify-content-center mb-2">Name</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <label for="protein" class="col-sm-2 col-form-label justify-content-center mb-2">Protein (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="protein" name="protein">
+                </div>
+                <label for="carbohydrate" class="col-sm-2 col-form-label justify-content-center mb-2">Total Carbohydrate
+                    (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="carbohydrate" name="carbohydrate">
+                </div>
+                <label for="fat" class="col-sm-2 col-form-label justify-content-center mb-2">Total Fat (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="fat" name="fat">
+                </div>
+                <label for="calcium" class="col-sm-2 col-form-label justify-content-center">Calcium (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="calcium" name="calcium">
+                </div>
+                <label for="potassium" class="col-sm-2 col-form-label justify-content-center">Potassium (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="potassium" name="potassium">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="alcohol" class="col-sm-2 col-form-label justify-content-center mb-2">Alcohol (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="alcohol" name="alcohol">
+                </div>
+                <label for="iron" class="col-sm-2 col-form-label justify-content-center mb-2">Iron (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="iron" name="iron">
+                </div>
+                <label for="vitamina" class="col-sm-2 col-form-label justify-content-center mb-2">Vitamin A (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="vitamina" name="vitamina">
+                </div>
+                <label for="vitaminc" class="col-sm-2 col-form-label justify-content-center mb-2">Vitamin C (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="vitaminc" name="vitaminc">
+                </div>
+                <label for="caffeine" class="col-sm-2 col-form-label justify-content-center mb-2">Caffeine (gr)</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="caffeine" name="caffeine">
+                </div>
+                <label for="calories" class="col-sm-2 col-form-label justify-content-center mb-2">Calories</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="calories" name="calories">
+                </div>
+            </div>
+        </div>
+        <div class="mb-2">
+            <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+    </form>
+
+{% endblock %}

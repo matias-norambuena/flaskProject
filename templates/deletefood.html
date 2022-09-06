@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Delete Food
+{% endblock %}
+
+{% block main %}
+    <h4>Select food to delete</h4>
+    <br>
+    <div class="container">
+        <form action="/deletefood" method="post">
+            <row class="row justify-content-center">
+                <div class="form-group col-4">
+                    <div class="mb-3">
+                        <label for="selectfood">Select Food</label>
+                        <select class="custom-select mr-sm-2" id="selectfood" name="food">
+                            <option selected></option>
+                            {% for food in foods %}
+                                <option value="{{ food["name"] }}">{{ food["name"] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </div>
+            </row>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,237 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Meal Plan
+{% endblock %}
+
+{% block main %}
+    <h4>Select your meals</h4>
+    <br>
+    <div class="container">
+        <form action="/mealplan" method="post">
+            <row class="row justify-content-center">
+                <div class="form-group col-2">
+                    <div class="mb-3">
+                        <div class="col mb-3">
+                            <label for="selectfood">Food</label>
+                            <select class="custom-select mr-sm-2" id="selectfood" name="food">
+                                <option selected></option>
+                                {% for food in foods %}
+                                    <option value="{{ food["name"] }}">{{ food["name"] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col mb-3">
+                            <label for="amount">Amount gr</label>
+                            <input type="text" id="amount" name="amount">
+                        </div>
+                        <div class="col mb-3">
+                            <select class="custom-select mr-sm-2" id="selecttype" name="type">
+                                <option value="breakfast">breakfast</option>
+                                <option value="lunch">lunch</option>
+                                <option value="dinner">dinner</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                    <br>
+                    <a href="/deletemeal" class="link-primary"> - Delete Meal</a>
+                </div>
+            </row>
+        </form>
+    </div>
+    <div class="container">
+        <br>
+        <h4>Breakfast</h4>
+        <row class="mb-2">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Protein (gr)</th>
+                    <th>Carbohydrate (gr)</th>
+                    <th>Fat (gr)</th>
+                    <th>Total (gr)</th>
+                    <th>Calories</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for breakfast in breakfasts %}
+                    <tr>
+                        <td>{{ breakfast["name"] }}</td>
+                        <td>{{ '%0.2f'|format(breakfast["protein"])|float }}</td>
+                        <td>{{ '%0.2f'|format(breakfast["carbohydrate"])|float }}</td>
+                        <td>{{ '%0.2f'|format(breakfast["fat"])|float }}</td>
+                        <td>{{ '%0.2f'|format(breakfast["amount"])|float }}</td>
+                        <td>{{ '%0.2f'|format(breakfast["calories"])|float }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </row>
+    </div>
+    <div class="container">
+        <br>
+        <h4>Lunch</h4>
+        <row class="mb-2">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Protein (gr)</th>
+                    <th>Carbohydrate (gr)</th>
+                    <th>Fat (gr)</th>
+                    <th>Total (gr)</th>
+                    <th>Calories</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for lunch in lunchs %}
+                    <tr>
+                        <td>{{ lunch["name"] }}</td>
+                        <td>{{ '%0.2f'|format(lunch["protein"])|float }}</td>
+                        <td>{{ '%0.2f'|format(lunch["carbohydrate"])|float }}</td>
+                        <td>{{ '%0.2f'|format(lunch["fat"])|float }}</td>
+                        <td>{{ '%0.2f'|format(lunch["amount"])|float }}</td>
+                        <td>{{ '%0.2f'|format(lunch["calories"])|float }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </row>
+    </div>
+    <div class="container">
+        <br>
+        <h4>Dinner</h4>
+        <row class="mb-2">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Protein (gr)</th>
+                    <th>Carbohydrate (gr)</th>
+                    <th>Fat (gr)</th>
+                    <th>Total (gr)</th>
+                    <th>Calories</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for dinner in dinners %}
+                    <tr>
+                        <td>{{ dinner["name"] }}</td>
+                        <td>{{ '%0.2f'|format(dinner["protein"])|float }}</td>
+                        <td>{{ '%0.2f'|format(dinner["carbohydrate"])|float }}</td>
+                        <td>{{ '%0.2f'|format(dinner["fat"])|float }}</td>
+                        <td>{{ '%0.2f'|format(dinner["amount"])|float }}</td>
+                        <td>{{ '%0.2f'|format(dinner["calories"])|float }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </row>
+    </div>
+    <div class="container">
+        <br>
+        <div class="row align-items-center">
+            <div class="col">
+                <h4>Total</h4>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Protein (gr)</th>
+                        <th>Carbohydrate (gr)</th>
+                        <th>Fat (gr)</th>
+                        <th>Calories</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for total in totals %}
+                        <tr>
+                            <td>{{ '%0.2f'|format(total["protein"])|float }}</td>
+                            <td>{{ '%0.2f'|format(total["carbohydrate"])|float }}</td>
+                            <td>{{ '%0.2f'|format(total["fat"])|float }}</td>
+                            <td>{{ '%0.2f'|format(total["calories"])|float }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <div id="chart"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        fetch('/total')
+            .then((response) => {
+                return response.json();
+            })
+            .then((json) => {
+                piechart(json)
+            });
+
+        function piechart(json) {
+
+            const data = json
+            const total = data[0].value + data[1].value + data[2].value
+
+            var w = 400;
+            var h = 400;
+            var r = h / 2;
+            var aColor = [
+                'rgb(178, 55, 56)',
+                'rgb(213, 69, 70)',
+                'rgb(230, 125, 126)',
+                'rgb(239, 183, 182)'
+            ]
+
+
+            var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h)
+                .append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+
+            var pie = d3.layout.pie().value(function (d) {
+                return d.value;
+            });
+
+            var arc = d3.svg.arc().outerRadius(r);
+
+            var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+            arcs.append("svg:path")
+                .attr("fill", function (d, i) {
+                    return aColor[i];
+                })
+                .attr("d", function (d) {
+                    return arc(d);
+                });
+
+            arcs.append("svg:text")
+                .attr("transform", function (d) {
+                        d.innerRadius = 100; /* Distance of label to the center*/
+                        d.outerRadius = r;
+                        return "translate(" + arc.centroid(d) + ")";
+                    }
+                )
+                .attr("text-anchor", "middle")
+                .text(function (d, i) {
+                    return Math.round(data[i].value * 100 / total) + '%';
+                });
+
+            arcs.append("text")
+                .attr("transform", function (d) {
+                    d.innerRadius = -90;
+                    d.outerRadius = r;
+                    return "translate(" + arc.centroid(d) + ")";
+                })
+                .attr("text-anchor", "middle")
+                .text(function (d, i) {
+                        return data[i].label;
+                    }
+                );
+        }
+
+    </script>
+
+{% endblock %}
